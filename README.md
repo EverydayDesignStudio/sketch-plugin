@@ -2,7 +2,7 @@
 
 ## Installation
 
-- [Download](../../releases/latest/download/everydaydesignstudio.sketchplugin.zip) the latest release of the plugin
+- [Download](../../releases/latest/) the latest release of the plugin
 - Un-zip
 - Double-click on everydaydesignstudio.sketchplugin
 
