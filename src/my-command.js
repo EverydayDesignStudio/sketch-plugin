@@ -36,47 +36,71 @@ function getSelectionAndOptions_forAngleInstances({ scriptPath }) {
 }
 
 // Creates new artboard beside currently selected artboard
-function createNewArtboardBeside(page, layer) {
+function createNewArtboardBeside(page, layer, w, h) {
   var padding = 50
-  print(padding)
 
   var xpos = layer.frame().x() + layer.frame().width() + padding
-  print(xpos)
   var ypos = layer.frame().y()
 
   let myArtboard = new Artboard({ 
     parent: page,
-    frame: { x: xpos, y: ypos, width: 300, height: 300 }
+    frame: { x: xpos, y: ypos, width: w, height: h }
   })
 
   return myArtboard
 }
 
-function createRectangle(artboard, colors, percent) {
+// Creates a single rectangle and places on given artboard
+function createRect(artboard, color, percent, posX, posY) {
+  var max = 300
+
+  // var centerX = artboard.frame.x
+  // print(centerX)
+
   let myShape = new Shape({
-    name: 'my shape',
-    parent: myArtboard,
-    frame: { x: 53, y: 213, width: 122, height: 122 },
-    style: { 
-      fills: ['#35E6C9'],
+    name: 'color box',
+    parent: artboard,
+    frame: { x: posX, y: posY, width: max*percent, height: max*percent },
+    style: {
+      fills: [color],
       borders: []
     }
   })
 }
 
+// Iterate through all rectangle info
+function createRectangles(artboard, colors, percents) {
+  if (colors.length == 5 && percents.length == 5) {
+    createRect(artboard, colors[0], percents[0], 133, 121)
+    createRect(artboard, colors[1], percents[1], 170, 170)
+
+    createRect(artboard, colors[2], percents[2], 130, 195)
+    createRect(artboard, colors[3], percents[3], 150, 219)
+    createRect(artboard, colors[4], percents[4], 170, 247)
+  } else {
+    for (var i = 0; i < colors.length; i++) {
+      var posX = Math.floor((Math.random() * 100) + 125)
+      var posY = Math.floor((Math.random() * 75) + 125)
+      createRect(artboard, colors[i], percents[i], posX, posY)
+    }
+  }
+}
+
+// Process the inputted data and call the shape building functions
 function processString(inputStr) {
   let rawElements = inputStr.replace('\n', '').split('][')
 
   var colorsStr = rawElements[0].slice(2,-1)
   var colors = colorsStr.split("', '")
   colors.forEach(rgbToHex)
-  print(colors)
   
   var percentsStr = rawElements[1].slice(0,-1)
   var percents = percentsStr.split(',')
-  print(percents)
+
+  return [colors, percents]
 }
 
+// Helpers for RGB to Hex
 function rgbToHex(str, index, arr) {
   var colors = str.split(', ')
   var r = componentToHex(colors[0])
@@ -92,12 +116,11 @@ function componentToHex(c) {
   return hex.length == 1 ? "0" + hex : hex;
 }
 
+// The main() of the Sketch plugin
 export default function({ api, command, document, plugin, scriptPath, scriptURL, selection }) {
   let page = document.currentPage()
 
-  print("\n\n--------------------------------")
-  // sketch.UI.message("It 🤮")
-  // print(selection.count())
+  print("\n\n--------------------------------------")
   
   // Artboards on Selected Layers
   let selectedLayers = Array.fromNSArray(selection)
@@ -115,33 +138,26 @@ export default function({ api, command, document, plugin, scriptPath, scriptURL,
     artboardsOnOtherPages = artboardsOnOtherPages.concat(artboards)
   }
 
-
   // Make sure only 1 artboard is selected
-  // print(selectedLayers[0])
-  // if (selection.count() != 1) {
-  //   sketch.UI.message("Select 1 (and only 1) artboard")
-  //   stop
-  // } else {
-  //   var artboard = createNewArtboardBeside(page, selectedLayers[0])
-  // }
+  print(selectedLayers[0])
+  if (selection.count() != 1) {
+    sketch.UI.message("Select 1 (and only 1) artboard")
+    stop
+  } else {
+    var inputString = sketch.UI.getStringFromUser(
+      "Paste in dominant color output", "",
+    )
+    var results = processString(inputString)
+    var colors = results[0]
+    var percents = results[1]
 
-  var inputString = sketch.UI.getStringFromUser(
-    "Paste in dominant color output", "",
-  )
-  processString(inputString)
+    print(colors)
+    print(percents)
 
+    var artboard = createNewArtboardBeside(page, selectedLayers[0], 400, 400)
+    createRectangles(artboard, colors, percents)
 
-
-
-  // print(selectedLayers[0])
-  // print(artboardsOnSelectPage)
-  // print(artboardsOnOtherPages)
-
-  // UI Modal Box
-  // getSelectionAndOptions_forAngleInstances({ scriptPath: scriptPath })
-
-  // For interacting with Artboards
-  // createNewArtboard(page)
-
-  sketch.UI.message("Dominant Color ran")
+    // ✅ Success!
+    sketch.UI.message("✅ Dominant Color finished")
+  }
 }
