@@ -5,39 +5,17 @@ var ShapePath = require('sketch/dom').ShapePath
 var Style = require('sketch/dom').Style
 // documentation: https://developer.sketchapp.com/reference/api/
 
-Array.fromNSArray = function(nsArray) {
-  let array = [];
-  for (var i = 0; i < nsArray.count(); i++) { array.push(nsArray[i]) }
-  return array
-}
-
-function loadLocalImage({ scriptPath, filePath }) {
-  let basePath = scriptPath
-    .stringByDeletingLastPathComponent()
-    .stringByDeletingLastPathComponent()
-    .stringByDeletingLastPathComponent()
-
-  return NSImage.alloc().initWithContentsOfFile(basePath + "/" + filePath)
-}
-
-function getSelectionAndOptions_forAngleInstances({ scriptPath }) {
-  let alert = NSAlert.alloc().init()
-  alert.setMessageText("Apply Mockup")
-  alert.setInformativeText("Choose an Artboard to apply into the selected shape")
-  alert.addButtonWithTitle("Apply")
-  alert.addButtonWithTitle("Cancel")
-
-  alert.icon = loadLocalImage({
-    scriptPath,
-    filePath: "Contents/Resources/logo.png"
-  })
-
-  return alert.runModal()
-}
+// GLOBAL VALUES
+// space between artboards
+let newArtboardPadding = 50
+// width & height of artboards
+let artboardWH = 400
+// max width & height, that all the boxes are a percentage of
+let maxWidthHeight = 300
 
 // Creates new artboard beside currently selected artboard
 function createNewArtboardBeside(page, layer, w, h) {
-  var padding = 50
+  var padding = newArtboardPadding
 
   var xpos = layer.frame().x() + layer.frame().width() + padding
   var ypos = layer.frame().y()
@@ -52,10 +30,8 @@ function createNewArtboardBeside(page, layer, w, h) {
 
 // Creates a single rectangle and places on given artboard
 function createRect(artboard, color, percent, posX, posY) {
-  var max = 300
-
-  // var centerX = artboard.frame.x
-  // print(centerX)
+  // maximum width & height, that all the boxes are a percentage of
+  var max = maxWidthHeight
 
   let myShape = new Shape({
     name: 'color box',
@@ -118,27 +94,15 @@ function componentToHex(c) {
 
 // The main() of the Sketch plugin
 export default function({ api, command, document, plugin, scriptPath, scriptURL, selection }) {
+  print("\n\n--------------------------------------")
+
+  // Current Page
   let page = document.currentPage()
 
-  print("\n\n--------------------------------------")
-  
-  // Artboards on Selected Layers
+  // Selected Layers
   let selectedLayers = Array.fromNSArray(selection)
 
-  // Artboards on Selected Page
-  let artboardsOnSelectPage = Array.fromNSArray(document.artboards())
-
-  // Artboards on Other Pages
-  let artboardsOnOtherPages = []
-  let pages = Array.fromNSArray(document.pages())
-  pages = pages.filter(page => page != document.currentPage())
-
-  for (var i = 0; i < pages.length; i++) {
-    var artboards = Array.fromNSArray(pages[i].artboards())
-    artboardsOnOtherPages = artboardsOnOtherPages.concat(artboards)
-  }
-
-  // Make sure only 1 artboard is selected
+  // Make sure only 1 artboard / layer is selected
   print(selectedLayers[0])
   if (selection.count() != 1) {
     sketch.UI.message("Select 1 (and only 1) artboard")
@@ -154,10 +118,45 @@ export default function({ api, command, document, plugin, scriptPath, scriptURL,
     print(colors)
     print(percents)
 
-    var artboard = createNewArtboardBeside(page, selectedLayers[0], 400, 400)
+    var artboard = createNewArtboardBeside(page, selectedLayers[0], artboardWH, artboardWH)
     createRectangles(artboard, colors, percents)
 
     // ✅ Success!
     sketch.UI.message("✅ Dominant Color finished")
   }
+}
+
+/* 
+ *
+ * Currently unused UI functions
+ *
+ */
+Array.fromNSArray = function(nsArray) {
+  let array = [];
+  for (var i = 0; i < nsArray.count(); i++) { array.push(nsArray[i]) }
+  return array
+}
+
+function loadLocalImage({ scriptPath, filePath }) {
+  let basePath = scriptPath
+    .stringByDeletingLastPathComponent()
+    .stringByDeletingLastPathComponent()
+    .stringByDeletingLastPathComponent()
+
+  return NSImage.alloc().initWithContentsOfFile(basePath + "/" + filePath)
+}
+
+function showModalWithSelectionAndOptions({ scriptPath }) {
+  let alert = NSAlert.alloc().init()
+  alert.setMessageText("Apply Mockup")
+  alert.setInformativeText("Choose an Artboard to apply into the selected shape")
+  alert.addButtonWithTitle("Apply")
+  alert.addButtonWithTitle("Cancel")
+
+  alert.icon = loadLocalImage({
+    scriptPath,
+    filePath: "Contents/Resources/logo.png"
+  })
+
+  return alert.runModal()
 }
