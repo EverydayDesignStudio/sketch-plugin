@@ -1,0 +1,34 @@
+{
+  "name": "everydaydesignstudio",
+  "description": "",
+  "version": "0.1.0",
+  "engines": {
+    "sketch": ">=49.0"
+  },
+  "skpm": {
+    "name": "EverydayDesignStudio",
+    "manifest": "src/manifest.json",
+    "main": "everydaydesignstudio.sketchplugin",
+    "assets": [
+      "assets/**/*"
+    ],
+    "sketch-assets-file": "sketch-assets/icons.sketch"
+  },
+  "scripts": {
+    "build": "skpm-build",
+    "watch": "skpm-build --watch",
+    "start": "skpm-build --watch --run",
+    "postinstall": "npm run build && skpm-link"
+  },
+  "devDependencies": {
+    "@skpm/builder": "^0.7.0"
+  },
+  "author": "Jordan White <jordanroywhite@gmail.com>",
+  "dependencies": {
+    "@skpm/buffer": "^0.1.0",
+    "@skpm/child_process": "^0.4.2",
+    "child_process": "^1.0.2",
+    "os": "^0.1.1",
+    "shelljs": "^0.8.4"
+  }
+}
