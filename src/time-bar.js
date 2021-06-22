@@ -26,7 +26,7 @@ export default function({ api, command, document, plugin, scriptPath, scriptURL,
   // Make sure only 1 artboard / layer is selected
   // print(selectedLayers[0])
   if (selection.count() != 1) {
-    sketch.UI.message("Select 1 (and only 1) artboard 0.0")
+    sketch.UI.message("Select 1 (and only 1) artboard or layer")
     stop
   } else {
     var inputString = sketch.UI.getStringFromUser(
@@ -50,7 +50,8 @@ export default function({ api, command, document, plugin, scriptPath, scriptURL,
     // createTimeDot(artboard, inputPercent)
 
     // ✅ Success!
-    sketch.UI.message("✅ Time Bar created with " + inputPercent + "%")
+    let printPercent = (inputPercent*100).toFixed(2)
+    sketch.UI.message("✅ Time Bar created with " + printPercent + "%")
   }
 }
 

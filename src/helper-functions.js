@@ -33,7 +33,6 @@ function createRect(name, artboard, color, posX, posY, width, height) {
       borders: []
     }
   })
-  // myShape.cornerRadiusFloat = RADIUS/2
 }
 
 module.exports = { createNewArtboardBelow, createRect};

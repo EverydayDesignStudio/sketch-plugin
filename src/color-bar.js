@@ -5,31 +5,6 @@ var ShapePath = require('sketch/dom').ShapePath
 var Style = require('sketch/dom').Style
 // documentation: https://developer.sketchapp.com/reference/api/
 
-// export default function({ api, command, document, plugin, scriptPath, scriptURL, selection }) {
-//   sketch.UI.message("Color Bar Version 6.0")
-//   print("\n\n--------------------------------------")
-
-//   // Current Page
-//   let page = document.currentPage()
-//   var inputString = sketch.UI.getStringFromUser(
-//     "Paste in list of colors", "",
-//   )
-//   sketch.UI.message(inputString)
-
-//   if (inputString != null || inputString != "") {
-//     print(inputString)
-//   } else {
-//     print('Nothing Entered')
-//   }
-
-//   createNewArtboardBeside(page, )
-// }
-
-// var sketch = context.api()
-// var doc = context.document;
-// var selection = context.selection.firstObject();
-// selection.resizesContent = 0
-
 // Global variables
 let newArtboardPadding = 25
 let artboardH = 16
@@ -48,14 +23,13 @@ export default function({ api, command, document, plugin, scriptPath, scriptURL,
   // Make sure only 1 artboard / layer is selected
   // print(selectedLayers[0])
   if (selection.count() != 1) {
-    sketch.UI.message("Select 1 (and only 1) artboard 5.0")
+    sketch.UI.message("Select 1 (and only 1) artboard or layer")
     stop
   } else {
     var inputString = sketch.UI.getStringFromUser(
       "Paste in a list of ids and colors for the Color Bar", "16584	133,141,113\n\
 16588	54,56,38\n\
-16594	81,81,69\n\
-16601	65,65,53",
+16594	81,81,69",
     )
 
     var idColorList = processInput(inputString)
@@ -76,26 +50,16 @@ function processInput(input) {
 
   var idColorList = []
 
-  var i
-  for (i = 0; i < count; i++) { 
-    // print(colors[i])
+  for (var i = 0; i < count; i++) { 
     let item = parsedArray[i].split('\t')
     item[1] = rgbToHex(item[1])
-    // print(item[0] + " | " + item[1])
     idColorList.push(item)
-    // print(parsedArray[i])
-    
-                    // layer name,      x,   y,    w,   h
-    // createRect(artboard, i, colors[i], width*i, 0, width, artboardH)
   }
 
   return idColorList
-
-
-  // parsedArray.forEach(splitIdFromColor)
-  // return parsedArray
 }
 
+// Unused helper functions
 function splitIdFromColor(str) {
   let array = str.split('\t')
   return array
@@ -167,7 +131,6 @@ function createRectanglesWithIds(artboard, idColorList) {
                     // layer name,      x,   y,    w,   h
     createRect("c_" + idColorList[i][0], artboard, idColorList[i][1], width*i, 0, width, artboardH)
   }
-
 }
 
 function createRectangles(artboard, colors) {

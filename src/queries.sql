@@ -10,8 +10,8 @@ SELECT picture_id, colors_rgb, colors_conf FROM pictures WHERE picture_id=4500;
 -------------------------------- Altitude Graph --------------------------------
 -- Altitude Graph in Hike --
 -- order by Altitude
-SELECT picture_id, altitude, altrank_hike, color_rank_hike, index_in_hike, mod(altrank_hike, (SELECT count(*) FROM pictures WHERE hike=29)/128.0) AS mod_val
-	FROM pictures WHERE hike=29 AND mod_val < 1.0 ORDER BY altrank_hike ASC;
+SELECT picture_id, altitude, altrank_hike, color_rank_hike, index_in_hike, mod(altrank_hike, (SELECT count(*) FROM pictures WHERE hike=10)/128.0) AS mod_val
+	FROM pictures WHERE hike=10 AND mod_val < 1.0 ORDER BY altrank_hike ASC;
 
 -- order by Color
 SELECT picture_id, altitude, altrank_hike, color_rank_hike, index_in_hike, mod(altrank_hike, (SELECT count(*) FROM pictures WHERE hike=10)/128.0) AS mod_val
