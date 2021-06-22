@@ -3,15 +3,39 @@
   "icon": "icon.png",
   "commands": [
     {
-      "name": "Dominant Color",
-      "identifier": "everydaydesignstudio.my-command-identifier",
-      "script": "./my-command.js"
+      "name": "Dominant Color - Transfer",
+      "identifier": "everydaydesignstudio.dominant-color-transfer",
+      "script": "./dominant-color-transfer.js"
+    },
+    {
+      "name": "Dominant Color - Slideshow",
+      "identifier": "everydaydesignstudio.dominant-color-slideshow",
+      "script": "./dominant-color-slideshow.js"
+    },
+    {
+      "name": "Altitude Graph ",
+      "identifier": "everydaydesignstudio.altitude-graph-identifier",
+      "script": "./altitude-graph.js"
+    },
+    {
+      "name": "Color Bar ",
+      "identifier": "everydaydesignstudio.color-bar-identifier",
+      "script": "./color-bar.js"
+    },
+    {
+      "name": "Time Bar ",
+      "identifier": "everydaydesignstudio.time-bar-identifier",
+      "script": "./time-bar.js"
     }
   ],
   "menu": {
-    "title": "EverydayDesignStudio",
+    "title": "Everyday Design Studio",
     "items": [
-      "everydaydesignstudio.my-command-identifier"
+      "everydaydesignstudio.dominant-color-transfer",
+      "everydaydesignstudio.dominant-color-slideshow",
+      "everydaydesignstudio.altitude-graph-identifier",
+      "everydaydesignstudio.color-bar-identifier",
+      "everydaydesignstudio.time-bar-identifier"
     ]
   }
 }
