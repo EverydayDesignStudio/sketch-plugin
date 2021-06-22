@@ -5,7 +5,7 @@
 - Double-click on everydaydesignstudio.sketchplugin
 
 
-## Instructions
+# Instructions
 Open the .db SQLite file in _DB Browser for SQLite_.
 
 Go to _Execute SQL_ tab.
@@ -18,23 +18,22 @@ Open Sketch and select an artboard or layer under which you'd like the new artbo
 
 Then run one of the following plugins:
 
-* _EverydayDesignStudio ➝ Dominant Color - Transfer Animation_
-* _EverydayDesignStudio ➝ Dominant Color - Slideshow_
-* _EverydayDesignStudio ➝ Altitude Graph_
-* _EverydayDesignStudio ➝ Color Bar_
-* _EverydayDesignStudio ➝ Time Bar_
-
+- _EverydayDesignStudio ➝ Dominant Color - Transfer Animation_
+- _EverydayDesignStudio ➝ Dominant Color - Slideshow_
+- [_EverydayDesignStudio Altitude Graph_](#altitude-graph)
+- [_EverydayDesignStudio Color Bar_](#color-bar)
+- [_EverydayDesignStudio Time Bar_](#time-bar)
 
 Paste in the appropriate data. How you naturally copy it from the database is the correct format.
 
 Click `Okay` and bam! There you go :)
 
 
-### TODO - Dominant Color - Transfer Animation
+## TODO - Dominant Color - Transfer Animation
 Create a collection of boxes from array of RGB and array of percentages. This data comes from the kmeans color detection script for Capra.
 
-**Example Input:**
-`4500	41,42,53|123,115,99|100,105,117|58,53,40	0.25,0.17,0.13,0.05`
+**Example Input**
+```4500	41,42,53|123,115,99|100,105,117|58,53,40	0.25,0.17,0.13,0.05```
 
 **Query:**
 ```sql
@@ -44,7 +43,7 @@ SELECT picture_id, colors_rgb, colors_conf FROM pictures WHERE picture_id=?;
 ```picture_id=```
 
 
-**Input Format:**
+**Input Format**
 ```
 ['r, g, b', 'r, g, b', 'r, g, b', ...]
 [%, %, %, ...]
@@ -56,28 +55,28 @@ SELECT picture_id, colors_rgb, colors_conf FROM pictures WHERE picture_id=?;
 ```
 
 
-### TODO - Dominant Color - Slideshow
+## TODO - Dominant Color - Slideshow
 Create the color palette UI element seen in the slideshow
 
-**Example Input:**
-`4500	41,42,53|123,115,99|100,105,117|58,53,40	0.25,0.17,0.13,0.05`
+**Example Input**
+```4500	41,42,53|123,115,99|100,105,117|58,53,40	0.25,0.17,0.13,0.05```
 
-**Query:**
+**Query**
 ```sql
 SELECT picture_id, colors_rgb, colors_conf FROM pictures WHERE picture_id=?;
 ```
 
-### Altitude Graph
+
+## Altitude Graph
 This feature relies on the `mod(x, y)` function available in SQLite versions >= 3.35.5. You'll need a newer version of **[DB Browser for SQLite](https://nightlies.sqlitebrowser.org/latest/)** >= 3.12.99.
 
-Run the following queries. Then copy the first two columns and paste that data into the plugin.
+Run the following queries. Then copy the **first two** columns and paste that data into the plugin.
 
-#### Altitude Graph for Hike
+### Altitude Graph for Hike
 
 **Parameters**
 ```
 hike=?
-
 128.0 (number of items returned)
 NOTE: Query requires the decimal point in order for the script to work
 ```
@@ -100,8 +99,7 @@ SELECT picture_id, altitude, altrank_hike, color_rank_hike, index_in_hike, mod(a
 	FROM pictures WHERE hike=? AND mod_val < 1.0 ORDER BY time ASC;
 ```
 
-
-#### Altitude Graph for Archive
+### Altitude Graph for Archive
 
 **Parameters**
 ```
@@ -133,7 +131,7 @@ SELECT picture_id, altitude, altrank_global, color_rank_global, time_rank_global
 	FROM pictures WHERE mod_val < 1.0 ORDER BY time ASC;
 ```
 
-#### (Experimental) Altitude Graph for Archive
+### (Experimental) Altitude Graph for Archive
 _Shows just one point for the average altitude of each Hike_
 
 **Parameters**
@@ -161,12 +159,12 @@ SELECT hike_id, avg_altitude, avg_altitude_rank, mod(avg_altitude_rank, (SELECT 
 ```
 
 
-### Color Bar
+## Color Bar
 This feature relies on the `mod(x, y)` function available in SQLite versions >= 3.35.5. You'll need a newer version of **[DB Browser for SQLite](https://nightlies.sqlitebrowser.org/latest/)** >= 3.12.99.
 
-Run the following queries. Then copy the first two columns and paste that data into the plugin.
+Run the following queries. Then copy the **first two** columns and paste that data into the plugin.
 
-#### Color Bar for Hike
+### Color Bar for Hike
 
 **Parameters**
 ```
@@ -186,7 +184,6 @@ SELECT picture_id, color_rgb, altrank_hike, color_rank_hike, index_in_hike, mod(
 ```sql
 SELECT picture_id, color_rgb, altrank_hike, color_rank_hike, index_in_hike, mod(altrank_hike, (SELECT count(*) FROM pictures WHERE hike=?)/128.0) AS mod_val
 	FROM pictures WHERE hike=? AND mod_val < 1.0 ORDER BY color_rank_hike ASC;
-
 ```
 
 **order by Time (chronological)**
@@ -195,7 +192,7 @@ SELECT picture_id, color_rgb, altrank_hike, color_rank_hike, index_in_hike, mod(
 	FROM pictures WHERE hike=? AND mod_val < 1.0 ORDER BY time ASC;
 ```
 
-#### Color Bar for Archive
+### Color Bar for Archive
 
 **order by Altitude**
 ```sql
@@ -221,10 +218,11 @@ SELECT picture_id, color_rgb, altrank_global, color_rank_global, time_rank_globa
 	FROM pictures WHERE mod_val < 1.0 ORDER BY time ASC;
 ```
 
-### Time Bar
+
+## Time Bar
 Run the following queries. Paste the percentage into the input the plugin.
 
-#### Time Bar (Percentages) for Hike
+### Time Bar (Percentages) for Hike
 
 **Parameters**
 ```
@@ -246,7 +244,7 @@ SELECT CAST((SELECT color_rank_hike FROM pictures WHERE picture_id=?) AS REAL)/(
 SELECT CAST((SELECT index_in_hike FROM pictures WHERE picture_id=?) AS REAL)/(SELECT count(*) FROM pictures WHERE hike=?);
 ```
 
-#### Time Bar (Percentages) for Archive
+### Time Bar (Percentages) for Archive
 
 **Parameters**
 ```
@@ -269,13 +267,11 @@ SELECT CAST((SELECT time_rank_global FROM pictures WHERE picture_id=?) AS REAL)/
 ```
 
 
-#### Time Bar for Archive
-
-## Development Guide
+# Development Guide
 
 _This plugin was created using `skpm`. For a detailed explanation on how things work, checkout the [skpm Readme](https://github.com/skpm/skpm/blob/master/README.md)._
 
-### Usage
+## Usage
 
 Install the dependencies
 
@@ -285,7 +281,7 @@ npm install
 
 Once the installation is done, you can run some commands inside the project folder:
 
-#### Changing any of the Menu items
+### Changing any of the Menu items
 You'll need to Uninstall the plugin from Sketch.
 Completely rebuild it with the command below.
 Then double click and install it from the Finder.
@@ -295,7 +291,7 @@ This is required when you change stuff at the top level of the `manifest.json`
 npm run build
 ```
 
-#### Next 2 are main one's you'll use during development on scripts
+### Next 2 are main one's you'll use during development on scripts
 To watch for changes:
 
 ```bash
@@ -307,16 +303,16 @@ Listen to print in another terminal window:
 skpm log -f
 ```
 
-#### I never used this one
+### I never used this one
 Additionally, if you wish to run the plugin every time it is built:
 
 ```bash
 npm run start
 ```
 
-### Custom Configuration
+## Custom Configuration
 
-#### Babel
+### Babel
 
 To customize Babel, you have two options:
 
@@ -324,7 +320,7 @@ To customize Babel, you have two options:
 
 - If you'd like to modify or add to the existing Babel config, you must use a `webpack.skpm.config.js` file. Visit the [Webpack](#webpack) section for more info.
 
-#### Webpack
+### Webpack
 
 To customize webpack create `webpack.skpm.config.js` file which exports function that will change webpack's config.
 
@@ -341,14 +337,14 @@ module.exports = function(config, isPluginCommand) {
 }
 ```
 
-### Debugging
+## Debugging
 
 To view the output of your `console.log`, you have a few different options:
 
 - Use the [`sketch-dev-tools`](https://github.com/skpm/sketch-dev-tools)
 - Run `skpm log` in your Terminal, with the optional `-f` argument (`skpm log -f`) which causes `skpm log` to not stop when the end of logs is reached, but rather to wait for additional data to be appended to the input
 
-### Publishing your plugin
+## Publishing your plugin
 
 ```bash
 skpm publish <bump>
